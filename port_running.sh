@@ -1,0 +1,1 @@
+echo;echo "$(cat /proc/net/tcp | awk '{print $2}' | cut -d ':' -f 2  | tr -d 'local_address' | xargs | tr ' ' '\n')" | sort -u| while read line; do echo "[+] Puerto $line -> $(echo "obase=10; ibase=16; $line" | bc) -open"; done
