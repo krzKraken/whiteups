@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function ctrl_c(){
-  echo "\n\n [!] Saliendo..."
+  echo -e "\n\n [!] Saliendo..."
   exit 1
 }
 

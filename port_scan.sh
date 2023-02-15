@@ -8,10 +8,13 @@ function ctrl_c(){
 #Ctrl+c
 trap ctrl_c INT
 
-echo -e "\n[+] Escaneando Puertos... \n"
+ip=$(ifconfig eth0 |  grep inet  | head -n 1 | awk '{print $2}')
+ip="192.168.1.161"
+
+echo -e "\n[+] Escaneando Puertos en: $ip \n"
 
 for port in $(seq 1 65535); do
-  (echo '' > /dev/tcp/127.0.0.1/$port) 2>/dev/null && echo "[+] Puerto $port - OPEN" &
+  (echo '' > /dev/tcp/"$ip"/"$port") 2>/dev/null && echo "[+] Puerto $port - OPEN" &
 done; wait
 
 echo -e "\n[+] Puertos escaneados... \n"
