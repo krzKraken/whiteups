@@ -76,7 +76,7 @@ searchIp(){
   ip_address="$1"
   machineName="$(cat bundle.js | grep "ip: \"$ip_address\"" -B 5 | grep "name: " | awk 'NF{print $NF}' | tr -d ',' | tr -d '"')"
   if [ "$machineName" ]; then
-    echo -e "${yellowColour}\n[+]${endColour} ${grayColour}La maquina correspondiente para la${endColour} ${blueColour}$ip_address${endColour} ${grayColour}es${endColour} ${purpleColour}$machineName${endColour}\n"
+    echo -e "${yellowColour}\n[+]${endColour} La maquina correspondiente para la ${blueColour}$ip_address${endColour} es ${purpleColour}$machineName${endColour}\n"
   else
     echo -e "\n${redColour}[!] Ip no existe${endColour}\n"
   fi
@@ -93,17 +93,10 @@ searchLink(){
 }
 searchDificult(){
   dificultad=$1
-  color=""
-  case "$dificultad" in
-    Insane) color="${redColour}";;
-    Dificil) color="${yellowColour}";;
-    Medio) color="${greenColour}";;
-    Facil) color="${greenColour}";;
-  esac
 
   dificultad_value="$(cat bundle.js | grep "dificultad: \"$dificultad\"" -B 5 | grep 'name:' | awk 'NF{print $NF}'| tr -d '"'| tr -d ','| column)"
   if [ "$dificultad_value" ]; then
-    echo -e "\n${yellowColour}[+]${endColour} Las maquinas con dificultad $color$dificultad ${endColour}son:\n\n$dificultad_value\n"
+    echo -e "\n${yellowColour}[+]${endColour} Las maquinas con dificultad${redColour} $dificultad ${endColour}son:\n\n$dificultad_value\n"
   else
     echo -e "\n${redColour}[!] No existe coincidencias.${endColour}"
   fi
@@ -120,16 +113,41 @@ searchForOS(){
   fi
 }
 
+searchForDificultAndOs(){
+  dificultad="$1"
+  os="$2"
+  machines_val="$(cat bundle.js | grep "dificultad: \"$dificultad\"" -C 5 | grep "so: \"$os\"" -B 5 | grep "name: " | awk '{print $2}' | tr -d '"' | tr -d ',' | column)"
+
+  if [ "$machines_val" ]; then
+    echo -e "\n${yellowColour}[+]${endColour} Las Máquinas de dificultad${purpleColour} $dificultad${endColour} y sistema operativos ${purpleColour}$os${endColour} son: \n"
+    cat bundle.js | grep "dificultad: \"$dificultad\"" -C 5 | grep "so: \"$os\"" -B 5 | grep "name: " | awk '{print $2}' | tr -d '"' | tr -d ',' | column
+  else
+    echo -e "${redColour}[!] No se encontraron coincidencias ${endColour}"
+  fi
+}
+
 searchForSkills(){
   skill="$1"
+  skills_value="$(cat bundle.js | grep "skills: " -B 7 | grep "$skill" -i -B 7 | grep "name: " | awk 'NF{print $NF}' | tr -d '"' | tr -d ',' | column)"
+  if [ "$skills_value" ]; then
+    echo -e "\n${yellowColour}[+]${endColour} Las máquinas que tienen esta skill ${purpleColour}$skill${endColour} son\n"
+    cat bundle.js | grep "skills: " -B 7 | grep "$skill" -i -B 7 | grep "name: " | awk 'NF{print $NF}' | tr -d '"' | tr -d ',' | column
+  else
+    echo -e "${redColour}\n[!] No se encontraron coincidencias para esta skill\n"
+  fi
 
 }
+
+
 
 
 
 # Indicadores
 declare -i parameter_counter=0
 
+# Indicadores - Chivatos
+declare -i chivato_dificultad=0
+declare -i chivato_os=0
 
 trap ctrl_c INT
 
@@ -139,8 +157,8 @@ case $arg in
   u) let parameter_counter+=2;;
   i) ipAddress="$OPTARG"; let parameter_counter+=3;;
   y) machine_name="$OPTARG"; let parameter_counter+=4;;
-  d) dificultad="$OPTARG"; let parameter_counter+=5;;
-  o) os="$OPTARG"; let parameter_counter+=6;;
+  d) dificultad="$OPTARG"; chivato_dificultad=1; let parameter_counter+=5;;
+  o) os="$OPTARG"; chivato_os=1; let parameter_counter+=6;;
   s) skills="$OPTARG"; let parameter_counter+=7;;
   h);;
 esac
@@ -158,8 +176,10 @@ elif [ $parameter_counter -eq 5 ]; then
   searchDificult $dificultad
 elif [ $parameter_counter -eq 6 ]; then
   searchForOS $os
+elif [ $chivato_os -eq 1 ] && [ $chivato_dificultad -eq 1 ]; then
+  searchForDificultAndOs $dificultad $os
 elif [ $parameter_counter -eq 7 ]; then
-  searchForSkills $skills
+  searchForSkills "$skills"
 else
   helpPanel
 fi
