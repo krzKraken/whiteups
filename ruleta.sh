@@ -23,7 +23,7 @@ function helpanel(){
   echo -e "\n${yellowColour}[+]${endColour} ${greenColour}Uso:${endColour} ${purpleColour}$0${endColour}\n"
   echo -e "Se requiere ingresar ambos parametros para jugar ${blueColour}(-m y -t)${endColour}\n"
   echo -e "\t${blueColour}m)${endColour} ${grayColour}Cantidad de Dinero para jugar.${endColour}"
-  echo -e "\t${blueColour}t)${endColour} ${grayColour}Tecnica para jugar.${endColour}\n"
+  echo -e "\t${blueColour}t)${endColour} ${grayColour}Tecnica para jugar ${endColour} ${purpleColour}(martingal/inverseLabrouchere)${endColour}\n"
   exit 1
 }
 
@@ -34,20 +34,27 @@ function martingala(){
   echo -ne "${yellowColour}[+]${endColour} A que deseas apostar continuamente (par/impar)? -> " && read par_impar
 
   echo -e "${endColour}[+]${endColour}\nVamos a apostar ${greenColour}\$$initial_bet${endColour} a ${greenColour}$par_impar${endColour}\n"
+  
   tput civis
   while true; do
-    random_number=$(($RANDOM % 2))
-    echo -e "\n${yellowColour}[+]${endColour}Salio el numero: $random_number"
-    if [ $((random_number)) -eq 0 ]; then
-  echo "Perdiste"
-    elif [ $((random_number % 2)) -eq 0 ] ; then
-    echo "Es Par"
-  else
-    echo "Es impar"
-  fi
-    sleep 1
-  done
-  tput cnorm
+    money=$(($money-$initial_bet))
+    echo -e "\n[+] Acabas de apostar ${yellowColour}$initial_bet${endColour} y tienes ${greenColour}$money${endColour}"    
+    random_number=$(($RANDOM % 37))
+    echo -e "\n${yellowColour}[+]${endColour} Ha salido el numero: $random_number"
+
+    if [ "$par_impar" == "par" ]; then
+      if [ $((random_number)) -eq 0 ]; then
+    echo -e "[+] Ha salido 0, ${redColour}Pierdes!${endColour}\n"
+      elif [ $((random_number % 2)) -eq 0 ] ; then
+        echo -e "[+] Ha salido Par, ${greenColour}Ganas!${endColour}"
+        money=$(($money+(2*$initial_bet)))
+      else
+        echo -e "[+] Ha salido Impar, ${redColour}Pierdes!${endColour}"
+      fi
+        sleep 1
+    fi
+    done
+    tput cnorm
 
 }
 
