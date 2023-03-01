@@ -38,23 +38,18 @@ function martingala(){
   tput civis
   while true; do
     money=$(($money-$initial_bet))
-    echo -e "\n[+] Acabas de apostar ${yellowColour}$initial_bet${endColour} y tienes ${greenColour}$money${endColour}"    
+    echo -e "\n[+] Acabas de apostar ${yellowColour}$initial_bet${endColour}\$ y tienes ${greenColour}$money${endColour}\$"    
     random_number=$(($RANDOM % 37))
-    echo -e "\n${yellowColour}[+]${endColour} Ha salido el numero: $random_number"
+    echo -e "${yellowColour}[+]${endColour} Ha salido el numero: $random_number"
 
     if [ "$par_impar" == "par" ]; then
       if [ $((random_number)) -eq 0 ]; then
-    echo -e "${yellowColour}[+]${endColour} Ha salido 0, ${redColour}Pierdes!${endColour}\n"
+    echo -e "[+] Ha salido 0, ${redColour}Pierdes!${endColour}\n"
       elif [ $((random_number % 2)) -eq 0 ] ; then
-        echo -e "${yellowColour}[+]${endColour} Ha salido Par, ${greenColour}Ganas!${endColour}"
-        reward=$((initial_bet*2))
-        money=$(($money+$reward))
-        echo -e "${yellowColour}[+]${endColour} Tienes ${greenColour}$money${endColour}"
-        initial_bet=$backup_bet
+        echo -e "[+] Ha salido Par, ${greenColour}Ganas!${endColour}"
+        money=$(($money+(2*$initial_bet)))
       else
-        echo -e "${yellowColour}[+]${endColour} Ha salido Impar, ${redColour}Pierdes!${endColour}"
-        initial_bet=$((initial_bet*2))
-        money=$()
+        echo -e "[+] Ha salido Impar, ${redColour}Pierdes!${endColour}"
       fi
         sleep 1
     fi
