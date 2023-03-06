@@ -113,7 +113,26 @@ function martingala(){
 }
 
 function inverseLabrouchere(){
-  echo -e "\n[+] Vamos a jugar con la tecnica inverseLabrouchere"
+  echo -e "${yellowColour}[+]${endColour} Vamos a Jugar con ${blueColour}$technique${endColour}\n"
+  echo -e "${yellowColour}[+]${endColour} Dinero disponible: \$${greenColour}$money${endColour}"
+  echo -ne "${yellowColour}[+]${endColour} A que deseas apostar continuamente (par/impar)? -> " && read par_impar
+
+  declare -a mi_secuencia=(1 2 3 4)
+
+  echo -e "${yellowColour}[+]${endColour} Iniciamos con una secuencia ${greenColour}[${mi_secuencia[@]}]${endColour}"
+  
+  bet=$((${mi_secuencia[0]} + ${mi_secuencia[-1]}))
+  unset mi_secuencia[0]
+  unset mi_secuencia[-1]
+  mi_secuencia=(${mi_secuencia[@]})
+
+  echo -e "${yellowColour}[+]${endColour} Invertimos ${greenColour}$bet\$${endColour} y nuestra secuencia queda ${greenColour}[${mi_secuencia[@]}]${endColour}"
+  
+  while true; do
+  random_number=$(($RANDOM % 37))
+  echo $random_number
+  done
+  
 }
 
 
