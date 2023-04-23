@@ -8,8 +8,8 @@ function ctrl_c(){
 #Ctrl+c
 trap ctrl_c INT
 
-ip=$(ifconfig eth0 |  grep inet  | head -n 1 | awk '{print $2}')
-ip="192.168.1.161"
+ip=$(ifconfig ens33 |  grep inet  | head -n 1 | awk '{print $2}')
+ip="192.168.0.111"
 
 echo -e "\n[+] Escaneando Puertos en: $ip \n"
 
